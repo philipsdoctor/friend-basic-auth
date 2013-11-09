@@ -4,7 +4,11 @@ Getting a feel for basic auth using friend.
 
 ## Usage
 
-FIXME
+example usage
+
+    lein ring server
+
+    curl -X POST -u friend:clojure http://localhost:3000/v0/r
 
 ## License
 

@@ -1,6 +1,5 @@
 (ns friend-basic.creds
-  (:require [crypto.password.scrypt :as password])
-  (:import org.mindrot.jbcrypt.BCrypt))
+  (:require [crypto.password.scrypt :as password]))
 
 
 
