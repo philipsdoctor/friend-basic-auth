@@ -4,12 +4,12 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.util.response :as resp]
             [compojure.route :refer [resources not-found]]
-            [compojure.handler :refer [site]]
+            [compojure.handler :refer [site api]]
             [cemerick.friend :as friend]
             [friend-basic.creds :as creds]
             (cemerick.friend [workflows :as workflows])
             ring.adapter.jetty
-            [compojure.core :refer (GET defroutes)]))
+            [compojure.core :refer (GET POST defroutes)]))
 
 (defn generate-response
   [code msg]
@@ -18,19 +18,17 @@
    :headers {"Content-Type" "text/plain"}})
 
 (defroutes app*
-  (GET "/requires-authentication" req
-       (friend/authenticated (str "You have successfully authenticated as "
-                                  (friend/current-authentication)))))
+  (POST "/v0/r" [] (generate-response 200 "Authed")))
 
 (def secured-app (friend/authenticate
                    app*
-                   {:allow-anon? true
+                   {:allow-anon? false
                     :unauthenticated-handler #(workflows/http-basic-deny "Friend basic test " %)
                     :workflows [(workflows/http-basic
                                  :credential-fn creds/scrypt-friend-cred-fn
                                  :realm "Friend basic")]}))
 
-(def app (site secured-app))
+(def app (api secured-app))
 
 (defn run
   []
